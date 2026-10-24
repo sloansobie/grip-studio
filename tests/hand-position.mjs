@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {Mesh,BoxGeometry,MeshBasicMaterial,Vector3} from '../static/vendor/three.module.js';
+import {placeHand} from '../static/hand-position.mjs';
+const obj=new Mesh(new BoxGeometry(2,2,2),new MeshBasicMaterial());obj.userData.pivot=new Vector3(10,20,30);
+const vertices=Array.from(obj.geometry.attributes.position.array);
+const zero={x:0,y:0,z:0,rx:0,ry:0,rz:0};
+placeHand(obj,zero);assert.deepEqual(obj.position.toArray(),[10,20,30]);
+placeHand(obj,{...zero,x:12,y:-5,z:7,rz:90});assert.deepEqual(obj.position.toArray(),[22,15,37]);
+const p=obj.localToWorld(new Vector3(1,0,0));assert.ok(p.distanceTo(new Vector3(22,16,37))<1e-10);
+assert.deepEqual(Array.from(obj.geometry.attributes.position.array),vertices);
+placeHand(obj,zero);assert.ok(obj.rotation.toArray().slice(0,3).every(v=>Math.abs(v)<1e-12));
+console.log('Hand placement: translation, rotation pivot, reset and immutable geometry passed.');
+
+obj.userData.gripPivot=new Vector3(10,0,0);
+placeHand(obj,{...zero,palm_angle:90});
+assert.ok(obj.position.distanceTo(new Vector3(10,-30,20))<1e-10);
+const centrelineDistance=Math.hypot(obj.position.y,obj.position.z);
+assert.ok(Math.abs(centrelineDistance-Math.hypot(20,30))<1e-10);
+assert.deepEqual(Array.from(obj.geometry.attributes.position.array),vertices);
+console.log('Palm angle: correct orbit around grip axis, radius preserved, geometry unchanged.');
