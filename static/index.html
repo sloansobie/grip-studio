@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Grip Studio · Prybar</title>
+<link rel="stylesheet" href="/static/style.css">
+<script type="importmap">{"imports":{"three":"/static/vendor/three.module.js"}}</script>
+</head><body class="simple-ui">
+<header><a class="brand" href="/">g<span>▰</span> <strong>GRIP STUDIO</strong></a><div class="project">PRYBAR / <span>Personal fit study</span></div><span class="local"><i></i> Local workspace</span></header>
+<main><aside>
+<div class="eyebrow">FROM HAND TO HANDLE</div><h1>A grip that<br>fits your hand.</h1><p class="intro">Enter three measurements in millimetres. Preview your grip, then download it.</p>
+<nav aria-label="Workflow"><button class="step active" data-step="0"><b>01</b> Baseline</button><button class="step" data-step="1"><b>02</b> Personalize</button><button class="step" data-step="2"><b>03</b> Export</button></nav>
+<section id="panel0" class="panel">
+<div class="sectiontitle"><h2>Set the reference</h2><span class="pill">ONE-TIME SETUP</span></div>
+<p class="muted">Use the hand that shaped this grip. All measurements are in millimetres.</p>
+<details class="guide"><summary>How to measure your hand <span>↗</span></summary>
+<svg viewBox="0 0 340 270" role="img" aria-label="Hand length from wrist crease to middle fingertip, palm length from the same wrist crease to middle finger base, breadth across knuckles excluding thumb">
+<defs><marker id="arr" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto-start-reverse"><path d="M0 0L5 2.5L0 5" fill="context-stroke"/></marker></defs>
+<path d="M113 237 L104 196 Q89 177 73 157 Q62 142 73 136 Q82 133 95 146 L111 158 L110 76 Q111 63 122 66 Q129 68 130 78 L132 130 L134 48 Q134 35 145 36 Q154 37 154 48 L156 128 L159 62 Q159 49 169 50 Q177 52 177 63 L178 131 L182 91 Q183 80 192 82 Q201 83 200 96 L197 172 Q195 202 181 237Z" fill="#e7e9df" stroke="#526158" stroke-width="2"/>
+<path d="M113 224L184 224 M130 133L178 133" fill="none" stroke="#526158" stroke-dasharray="4 3"/>
+<g stroke="#286f58" fill="none" marker-start="url(#arr)" marker-end="url(#arr)"><path d="M221 224V38"/><path d="M245 224V133"/><path d="M111 152H197"/></g>
+<g font-size="11" fill="#173f33"><text x="218" y="20">Hand</text><text x="244" y="119">Palm</text><text x="128" y="173">Breadth</text><text x="106" y="255">Wrist crease</text></g></svg>
+<p>Keep the hand flat, fingers straight and together, thumb relaxed away. Measure hand length from the wrist crease to the middle fingertip; palm length from that same crease to the base crease of the middle finger. Breadth is across the knuckles, excluding the thumb.</p><p>Use these same landmarks for every person. They define this app’s measurement protocol; do not mix measurements from different ANSUR landmark definitions.</p></details>
+<div id="reference-fields" class="measurements"></div>
+<div id="imprint-locked" class="notice" hidden><strong>Existing hand impression · locked</strong><p>The saved orientation and contact region belong to this scan. Only hand measurements deform its existing surface.</p></div><fieldset id="orientation-fields"><h3>Orient the grip</h3><label>Thumb end<select id="thumb-end"><option value="">Select an end</option><option value="-1">End A · negative long axis</option><option value="1">End B · positive long axis</option></select></label>
+<div class="control"><label for="palm-angle">Palm-facing direction <output id="palm-angle-out">0°</output></label><input id="palm-angle" type="range" min="0" max="360" step="1" value="0"><button class="subtle" id="pick-palm">Pick palm surface in preview</button></div>
+<p class="hint">The opposite side is labeled fingers. Choose the thumb end to label the little-finger end.</p>
+<div class="twocol"><label>Usable start (%)<input type="number" id="usable-start" min="0" max="89" value="10"></label><label>Usable end (%)<input type="number" id="usable-end" min="10" max="100" value="90"></label></div>
+<p class="hint">The two amber planes mark the hand-contact region. End features still resize with the whole model.</p>
+<label class="check"><input type="checkbox" id="landmarks"> I have checked the palm/finger labels, both ends, and usable region.</label>
+</fieldset><div id="repair-summary" class="notice"></div>
+<label class="check"><input type="checkbox" id="accept-repair"> I have reviewed and accept the orange repair patches and removed fragments.</label>
+<button class="primary" id="save-cal">Save baseline <span>→</span></button>
+<div class="actions"><button id="download-cal" class="textbutton">Save calibration file</button><label class="textbutton upload">Restore calibration<input type="file" id="import-cal" accept=".json"></label></div>
+</section>
+<section id="panel1" class="panel" hidden>
+<div class="sectiontitle"><h2>Your hand measurements</h2><span class="pill">MM</span></div><label>Profile name<input id="profile-name" type="text" placeholder="e.g. Sloan · first prototype" maxlength="100"></label>
+<p class="hint">Start with the reference hand, or enter the intended user’s measurements. The existing hand impression stretches with the grip.</p><div id="target-fields" class="measurements"></div><button class="textbutton" id="copy-ref">Use reference measurements</button>
+<details><summary>Optional hand measurements</summary><p class="hint">Recorded with the profile for fit studies; these do not alter the geometry.</p><div id="optional-fields" class="measurements"></div></details>
+<div class="notice"><strong>Impression preserved</strong><p>No new finger grooves or movable handprint. Every existing surface point follows the measurement-driven deformation.</p></div><button class="primary" id="preview">Generate preview <span>↗</span></button>
+<div class="actions"><label class="textbutton upload">Load saved profile<input type="file" id="import-profile" accept=".json"></label><button class="textbutton" id="save-profile">Save profile</button></div>
+</section>
+<section id="panel2" class="panel" hidden>
+<div class="sectiontitle"><h2>Review your prototype</h2><span class="pill">STL</span></div><p class="muted">Compare the shape and check the mesh before printing.</p>
+<div id="results"><p>Generate a personalized preview to see the results.</p></div>
+<button class="primary" id="export" disabled>Download grip &amp; report <span>↓</span></button><p class="hint">Includes STL, measurements, baseline calibration, and a validation report. STL dimensions are millimetres.</p>
+<div class="notice"><strong>Physical fit: unvalidated</strong><p>Check finger closure, thumb position, pressure hotspots, slipping, and comfort with the actual task. Mesh checks do not establish load-bearing suitability.</p></div>
+<details><summary>Fit study checklist</summary><p>Compare baseline and personalized prototypes with the reference user and at least two people with different hand proportions. Record comfort, contact pressure, control, and any manual adjustments. Tune the mapping only after testing.</p></details>
+</section>
+</aside>
+<section class="workspace" aria-label="3D grip preview"><div class="viewhead"><div><span class="eyebrow">LIVE MODEL</span><h2>Smoothed handle <span>V2</span></h2></div><span id="mesh-badge" class="pill">LOADING</span></div>
+<details id="hand-position-panel"><summary>Palm angle &amp; hand position</summary><p class="hint">Palm angle rolls the hand around the handle’s axis. Zero uses the saved reference orientation. The grip and its existing impression stay fixed.</p><div id="hand-position-controls"></div><div class="actions"><button id="reset-hand-position" class="textbutton">Reset to reference pose</button><button id="fit-hand-view" class="textbutton">Fit hand in view</button></div><p class="hint">Position is saved on this browser and included in downloaded profiles.</p></details><div id="hand-note">Hand shown for scale · not included in STL</div><div id="viewer"></div><div id="view-instruction">Drag to orbit · Scroll to zoom · Right-drag to pan</div>
+<div class="viewtoolbar"><button id="reset-view">↺ Reset view</button><label><input id="show-hand" type="checkbox" checked> Show hand</label><label><input id="show-original" type="checkbox"> Original scan</label><label><input id="show-baseline" type="checkbox"> Baseline</label><label><input id="transparent" type="checkbox"> Transparent</label><label><input id="show-repairs" type="checkbox"> Repairs</label></div>
+<div class="sectionbar"><label><input type="checkbox" id="section-enabled"> Section along grip</label><input aria-label="Section position" type="range" id="section-position" min="0" max="100" value="50"><span>Open cutaway</span><label>Hand opacity <input id="hand-opacity" type="range" min="15" max="100" value="65" aria-label="Hand opacity"></label></div>
+<div class="viewfooter"><div><i class="dot green"></i> Personalized <i class="dot grey"></i> Baseline <i class="dot orange"></i> Repairs / region</div><span id="dimensions">— × — × — mm</span></div>
+</section></main><div id="toast" role="status" aria-live="polite" hidden></div>
+<script type="module" src="/static/app.js"></script></body></html>
